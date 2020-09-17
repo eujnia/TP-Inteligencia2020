@@ -1,18 +1,19 @@
 function [W] = train2(entradas,yd,epocas,criterio,tasaAp) 
-%datos de validacion
+    % separo los datos de validacion
     p_valida =round(size(entradas,1)*0.2);
+    
     x_val = entradas(1:p_valida)'; 
-    yd_val = yd(1:round(size(yd,1)*0.2),:);
+    yd_val = yd(1:p_valida,:);
     
     %Vector de entradas con su respectivo bias
-    entradas = entradas(round(size(entradas,1)*0.2):size(entradas,1),:);
-    yd = yd(round(size(yd,1)*0.2):size(yd,1),:);
+    entradas = entradas(p_valida:size(entradas,1),:);
+    yd = yd(p_valida:size(yd,1),:);
+    
     x=[-1*ones(size(entradas,1),1), entradas];
      
     %Matriz de pesos
     W=rand(size(x,2),1)-0.5; 
     %Vector de pesos inicializado con valores al azar entre -0.5 y +0.5
-    
 
     %Itero por epocas
     for e=1:epocas
@@ -20,19 +21,13 @@ function [W] = train2(entradas,yd,epocas,criterio,tasaAp)
         %entrenamiento
         for p=1:size(x,1)
    
-         yp = x(p,:)* W;
-
-         if (yp>=0)
-         y=1;
-         else
-         y=-1;
-         endif
-         error=(yd(p)-(y));
+         yp = x(p,:) * W; 
+         error=(yd(p)-sign(yp));
          W = W+(.5*tasaAp)*error*x(p,:)'; 
         end
         
         # validacion si contamos con otro conjunto de datos 
-        desempenio=0;
+        desemp=0;
         
         for p=1:size(x_val,1)
           
@@ -45,15 +40,15 @@ function [W] = train2(entradas,yd,epocas,criterio,tasaAp)
           endif
           
           if y_val == yd_val(p) 
-            desempenio += 1;
+            desemp += 1;
           endif
         end
         
           
       # nro de aciertos / nro total de casos
-      desempenio_prom = desempenio / size(x,1);
+      desempProm = desemp / size(x,1);
       
-      if desempenio_prom >= criterio
+      if desempProm >= criterio
          break
       endif
     
