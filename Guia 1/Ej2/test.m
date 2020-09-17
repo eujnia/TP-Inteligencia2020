@@ -8,9 +8,11 @@ function [tasaAcierto] = test(W,data,yd)
     
     %Recorro los datos y evaluo la salida
     for p=1:size(x,1)
-         if(yd(p)~=sign(W*x(p,:)'))
+      
+         if(yd(p)~=sign(x(p,:)*W))
              nroErrores=nroErrores+1;
          end
+         
     end
-    tasaAcierto=100*(((size(x,1)-nroErrores))/size(x,1));   
+    tasaAcierto=(((size(x,1)-nroErrores))/size(x,1));   
 end

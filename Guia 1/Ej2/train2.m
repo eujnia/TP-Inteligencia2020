@@ -1,10 +1,17 @@
-function [W] = train2(entradas,yd,epocas,criterio,tasaAp)
-#rain(x,yd,nro_epocas,criterio,tasa_ap)
+function [W] = train2(entradas,yd,epocas,criterio,tasaAp) 
+%datos de validacion
+    p_valida =round(size(entradas,1)*0.2);
+    x_val = entradas(1:p_valida)'; 
+    yd_val = yd(1:round(size(yd,1)*0.2),:);
+    
     %Vector de entradas con su respectivo bias
+    entradas = entradas(round(size(entradas,1)*0.2):size(entradas,1),:);
+    yd = yd(round(size(yd,1)*0.2):size(yd,1),:);
     x=[-1*ones(size(entradas,1),1), entradas];
      
     %Matriz de pesos
-    W=rand(1,size(x,2),1)-0.5; %Vector de pesos inicializado con valores al azar entre -0.5 y +0.5
+    W=rand(size(x,2),1)-0.5; 
+    %Vector de pesos inicializado con valores al azar entre -0.5 y +0.5
     
 
     %Itero por epocas
@@ -12,8 +19,8 @@ function [W] = train2(entradas,yd,epocas,criterio,tasaAp)
     
         %entrenamiento
         for p=1:size(x,1)
-         entrada=x(p,:)';
-         yp = entrada * W;
+   
+         yp = x(p,:)* W;
 
          if (yp>=0)
          y=1;
@@ -21,16 +28,15 @@ function [W] = train2(entradas,yd,epocas,criterio,tasaAp)
          y=-1;
          endif
          error=(yd(p)-(y));
-         W = W+(.5*tasaAp)*error*entrada'; 
+         W = W+(.5*tasaAp)*error*x(p,:)'; 
         end
         
-        %validación
-             # desmp o validacion (si tenemos el dataset separado)
+        # validacion si contamos con otro conjunto de datos 
         desempenio=0;
         
-        for p=1:size(x,1)
+        for p=1:size(x_val,1)
           
-          y_p=x(p,:)'*W;
+          y_p=x_val(p,:)*W;
           
           if (y_p>=0)
             y_val=1;
@@ -38,7 +44,7 @@ function [W] = train2(entradas,yd,epocas,criterio,tasaAp)
             y_val=-1;
           endif
           
-          if y_val == yd(p) 
+          if y_val == yd_val(p) 
             desempenio += 1;
           endif
         end

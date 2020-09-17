@@ -1,6 +1,6 @@
 warning('off');
 
-nro_epocas=2000;
+nro_epocas=500;
 criterio=0.875;
 tasa_ap=0.1; 
 
